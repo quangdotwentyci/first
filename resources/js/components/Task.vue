@@ -14,6 +14,7 @@
 
 <script>
     export default {
+        props: ['userid'],
         data() {
             return {
                 tasks: [],
@@ -25,7 +26,7 @@
                 .then((res) => {
                     this.tasks = res.data
                 })
-            window.Echo.channel('task')
+            window.Echo.channel('task.' + this.userid)
                 .listen('TaskCreated', e => {
                     this.tasks.push(e.task)
                 })

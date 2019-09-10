@@ -1881,6 +1881,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['userid'],
   data: function data() {
     return {
       tasks: [],
@@ -1893,7 +1894,7 @@ __webpack_require__.r(__webpack_exports__);
     axios.get('/task').then(function (res) {
       _this.tasks = res.data;
     });
-    window.Echo.channel('task').listen('TaskCreated', function (e) {
+    window.Echo.channel('task.' + this.userid).listen('TaskCreated', function (e) {
       _this.tasks.push(e.task);
     });
   },

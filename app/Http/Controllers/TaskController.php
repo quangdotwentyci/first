@@ -17,7 +17,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return Task::all();
+        return Auth::user()->tasks;
     }
 
     /**
