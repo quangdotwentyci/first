@@ -2,10 +2,17 @@
 
 namespace App;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * Class User
+ * @package App
+ * @mixin \Eloquent
+ * @mixin Builder
+ */
 class User extends Authenticatable
 {
     use Notifiable;

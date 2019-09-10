@@ -11,6 +11,7 @@
 |
 */
 
+Route::get('/broad', 'BroadcastController@index');
 Route::get('/', function () {
     return view('welcome');
 });
