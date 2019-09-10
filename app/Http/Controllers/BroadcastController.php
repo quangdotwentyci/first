@@ -10,7 +10,10 @@ class BroadcastController extends Controller
 {
     public function index()
     {
+        return view('broad');
+    }
+    public function create()
+    {
         event(new UserCreated(User::orderBy('id','desc')->first()));
-        return 1;
     }
 }

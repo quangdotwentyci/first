@@ -11,7 +11,11 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/broad', 'BroadcastController@index');
+Route::post('/broad', 'BroadcastController@create');
+Route::resource('task', 'TaskController');
 Route::get('/', function () {
     return view('welcome');
 });
