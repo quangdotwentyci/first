@@ -34,7 +34,6 @@ class TaskCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('task.' . $this->task->user_id);
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel('task.' . $this->task->user_id);
     }
 }

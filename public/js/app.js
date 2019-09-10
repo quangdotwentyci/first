@@ -1880,13 +1880,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['userid'],
   data: function data() {
     return {
       tasks: [],
-      content: ''
+      content: '',
+      activePeer: '',
+      typingTimer: false
     };
+  },
+  computed: {
+    channel: function channel() {
+      return window.Echo["private"]('task.' + this.userid);
+    }
   },
   created: function created() {
     var _this = this;
@@ -1894,20 +1902,34 @@ __webpack_require__.r(__webpack_exports__);
     axios.get('/task').then(function (res) {
       _this.tasks = res.data;
     });
-    window.Echo.channel('task.' + this.userid).listen('TaskCreated', function (e) {
+    this.channel.listen('TaskCreated', function (e) {
       _this.tasks.push(e.task);
-    });
+    }).listenForWhisper('typing', this.flash);
   },
   methods: {
     click: function click() {
-      var _this2 = this;
-
       axios.post('/task', {
         content: this.content
-      }).then(function (res) {
-        _this2.tasks.push(res.data);
       });
       this.content = '';
+    },
+    onTap: function onTap() {
+      this.channel.whisper('typing', {
+        name: 1
+      });
+    },
+    flash: function flash(e) {
+      var _this2 = this;
+
+      console.log(e);
+      this.activePeer = e.name;
+
+      var clearActive = function clearActive() {
+        _this2.activePeer = '';
+      };
+
+      if (this.typingTimer) clearInterval(this.typingTimer);
+      this.typingTimer = setTimeout(clearActive, 1000);
     }
   }
 });
@@ -47548,6 +47570,7 @@ var render = function() {
             attrs: { type: "text" },
             domProps: { value: _vm.content },
             on: {
+              keydown: _vm.onTap,
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -47558,6 +47581,10 @@ var render = function() {
           })
         ]
       ),
+      _vm._v(" "),
+      _vm.activePeer
+        ? _c("span", [_vm._v(_vm._s(_vm.activePeer) + " is typing")])
+        : _vm._e(),
       _vm._v(" "),
       _c("Button", { on: { click: _vm.click } }, [_vm._v("Create new task")])
     ],

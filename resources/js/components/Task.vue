@@ -6,8 +6,9 @@
             <li v-for="task in tasks" :key="task.id">{{task.content}}</li>
         </ul>
         <form @submit.prevent="click">
-            <input type="text" v-model="content">
+            <input type="text" v-model="content" @keydown="onTap">
         </form>
+        <span v-if="activePeer">{{activePeer}} is typing</span>
         <Button @click="click">Create new task</Button>
     </div>
 </template>
@@ -18,7 +19,14 @@
         data() {
             return {
                 tasks: [],
-                content: ''
+                content: '',
+                activePeer: '',
+                typingTimer: false
+            }
+        },
+        computed: {
+            channel() {
+                return window.Echo.private('task.' + this.userid);
             }
         },
         created() {
@@ -26,19 +34,28 @@
                 .then((res) => {
                     this.tasks = res.data
                 })
-            window.Echo.channel('task.' + this.userid)
+            this.channel
                 .listen('TaskCreated', e => {
                     this.tasks.push(e.task)
                 })
+                .listenForWhisper('typing', this.flash)
         },
         methods: {
             click() {
                 axios.post('/task', {content: this.content})
-                    .then(res => {
-                        this.tasks.push(res.data)
-                    })
-
                 this.content = ''
+            },
+            onTap() {
+                this.channel.whisper('typing', {name: 1})
+            },
+            flash(e) {
+                console.log(e)
+                this.activePeer = e.name
+                const clearActive = () => {
+                    this.activePeer = ''
+                }
+                if (this.typingTimer) clearInterval(this.typingTimer)
+                this.typingTimer = setTimeout(clearActive, 1000)
             }
         },
     }

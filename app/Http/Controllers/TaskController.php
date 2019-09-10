@@ -39,7 +39,7 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $task = Auth::user()->tasks()->create($request->all());
-        event((new TaskCreated($task))->dontBroadcastToCurrentUser());
+        event((new TaskCreated($task)));
         return $task;
     }
 
