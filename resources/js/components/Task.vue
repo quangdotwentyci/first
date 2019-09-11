@@ -39,6 +39,11 @@
                     this.tasks.push(e.task)
                 })
                 .listenForWhisper('typing', this.flash)
+
+            window.Echo.private('App.User.' + this.userid)
+                .notification((notification) => {
+                    console.log(notification);
+                });
         },
         methods: {
             click() {

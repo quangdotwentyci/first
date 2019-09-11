@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\TaskCreated;
+use App\Events\TaskCreatedEvent;
 use App\Notifications\TaskCreatedNotification;
 use App\Task;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,9 @@ class TaskController extends Controller
             'content' => rand()
         ]);
         Notification::send($user, new TaskCreatedNotification($user, $task));
+
+        // if want to send to all user
+//        Notification::send(User::all(), new TaskCreatedNotification($user, $task));
         $user->unreadNotifications->markAsRead();
 //        $user->notify(new TaskCreatedNotification());
         return $task;
@@ -48,7 +52,7 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $task = Auth::user()->tasks()->create($request->all());
-        event((new TaskCreated($task)));
+        event((new TaskCreatedEvent($task)));
         return $task;
     }
 

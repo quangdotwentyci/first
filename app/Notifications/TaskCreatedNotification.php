@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -34,7 +35,7 @@ class TaskCreatedNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['broadcast'];
     }
 
     /**
@@ -64,5 +65,13 @@ class TaskCreatedNotification extends Notification
             'task_id' => $this->task->id,
             'content' => $this->task->content
         ];
+    }
+
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage([
+            'task_id' => $this->task->id,
+            'content' => $this->task->content
+        ]);
     }
 }

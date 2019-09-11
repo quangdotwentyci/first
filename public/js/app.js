@@ -1905,6 +1905,9 @@ __webpack_require__.r(__webpack_exports__);
     this.channel.listen('TaskCreated', function (e) {
       _this.tasks.push(e.task);
     }).listenForWhisper('typing', this.flash);
+    window.Echo["private"]('App.User.' + this.userid).notification(function (notification) {
+      console.log(notification);
+    });
   },
   methods: {
     click: function click() {
